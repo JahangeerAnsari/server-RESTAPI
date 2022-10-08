@@ -1,10 +1,10 @@
 const mongoose = require('mongoose');
-const connectionString = `mongodb+srv://dbUser:mydatabase@cluster0.tishv.mongodb.net/Store?retryWrites=true&w=majority`;
+
 
 const connectDB = (url) =>{
  return mongoose
   .connect(
-    connectionString,
+    url,
     {
       useNewUrlParser: true,
       useUnifiedTopology: true,
