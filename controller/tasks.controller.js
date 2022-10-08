@@ -3,9 +3,13 @@
  const getAllTasks = async (req, res) => {
  try {
    const tasks = await Task.find({});
-   res.status(200).json({
-     tasks
-   });
+  //  res.status(200).json({
+  //    tasks
+  //  });
+  // in a better way
+  res.status(200).json({status:'success',data:{
+    tasks, nbHits:tasks.length
+  }})
  } catch (error) {
   res.status(500).json({msg:error})
  }
@@ -13,8 +17,15 @@
 //  add new task
  const createTask =async (req, res) => {
    try {
-    const task = await Task.create(req.body);
-    res.status(201).json({ task });
+    const alredyExitstask = await Task.findOne({ name: req.body.name });
+    if (alredyExitstask) {
+      return res.status(200).json({
+        msg:"this task is already exits in our database"
+      })
+    } else {
+      const task = await Task.create(req.body);
+      res.status(201).json({ status: 'success', data: { task } });
+    }
    } catch (error) {
     res.status(500).json({
       msg:error
@@ -31,7 +42,11 @@ return res.status(404).json({
   msg: `No task with this id : ${taskId}`,
 });
     }else{
-      res.status(200).json({task})
+     res.status(200).json({
+       status: 'success',
+       data: 
+         {task}
+     });
     }
   } catch (error) {
    res.status(500).json({

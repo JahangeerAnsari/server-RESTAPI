@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const tasks = require('./routes/tasks.route');
+const notFoundRoute  = require('./middleware/index')
 const connectDB =require('./db/connection');
 require('dotenv').config()
 
@@ -9,12 +10,10 @@ app.use(express.json());
 
 
 // routes
-app.get('/hello', (req, res) => {
-  res.send('hello from server');
-});
 app.use('/api/v1/tasks',tasks);
+app.use(notFoundRoute);
 
-const port = 3000;
+const port = process.env.PORT || 3000;
 const start = async () =>{
     try {
      await connectDB(process.env.MONGOOSE_URL);   
