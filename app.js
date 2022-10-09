@@ -1,5 +1,5 @@
 const express = require('express');
-
+const cors = require('cors')
 const app = express();
 const taskRoutes = require('./routes/tasks.route');
 const productRoutes = require('./routes/product.route');
@@ -9,7 +9,8 @@ const errorMiddleware = require('./middleware/errorHandler');
 require('express-async-errors');
 require('dotenv').config();
 
-// middleware for req.boyd
+// middleware 
+app.use(cors())
 app.use(express.json());
 
 // routes
