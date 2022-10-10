@@ -7,6 +7,23 @@ exports.validateRequest = [
     .isLength({min:6})
     .withMessage("Minumum 6 character required")
 ];
+exports.validateProductRequest = [
+  check('name')
+    .notEmpty()
+    .withMessage('Product name must be provided')
+    .isLength({ min: 6 })
+    .withMessage('Minumum 6 character required'),
+  check('price')
+    .notEmpty()
+    .withMessage('Product price must be provided')
+    .isLength({ min: 4 })
+    .withMessage('Minumum 4 character required'),
+  check('company')
+    .notEmpty()
+    .withMessage('Product brand must be provided')
+    .isLength({ min: 2 })
+    .withMessage('Minumum 2 character required'),
+];
 exports.isRequestValidated = (req, res,next) =>{
   const errors = validationResult(req);
   if (errors.array().length > 0) {
