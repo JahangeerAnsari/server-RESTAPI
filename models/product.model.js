@@ -12,14 +12,22 @@ const productSchema = mongoose.Schema(
       type: Number,
       required: true,
     },
+    rating:{
+      
+      type: Number,
+      
+    },
     featured: {
       type: Boolean,
       default: false,
     },
     company: {
       type: String,
-      require: true,
-      trim: true
+      required:true,
+      enum: {
+        values: ['ikea', 'liddy', 'caressa','marcos'],
+        message:'{VALUE} is not supported'
+      },
       // enum:['ikea','apple','sumsung']
     },
   },
