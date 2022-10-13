@@ -16,13 +16,13 @@ exports.validateProductRequest = [
   check('price')
     .notEmpty()
     .withMessage('Product price must be provided')
-    .isLength({ min: 4 })
-    .withMessage('Minumum 4 character required'),
+    .isLength({ min: 2 })
+    .withMessage('Minumum 2 character required'),
   check('company')
     .notEmpty()
     .withMessage('Product brand must be provided')
-    .isLength({ min: 2 })
-    .withMessage('Minumum 2 character required'),
+    .isLength({ min: 4 })
+    .withMessage('Minumum 4 character required'),
 ];
 exports.isRequestValidated = (req, res,next) =>{
   const errors = validationResult(req);

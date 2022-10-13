@@ -46,47 +46,50 @@ const selectProductByValue = async (req, res) => {
   }
 };
 
- const limitsNumberOfProducts = async (req,res) =>{
+const limitsNumberOfProducts = async (req, res) => {
   try {
-   const products = await Product.find({})
-   .sort('name')
-   .select('name price')
-   .limit(5).skip(1) ;
-   res.status(200).json({
-     msg: 'Products.....',
-     data: { products, nbHits: products.length },
-   });
+    const products = await Product.find({})
+      .sort('name')
+      .select('name price')
+      .limit(5)
+      .skip(1);
+    res.status(200).json({
+      msg: 'Products.....',
+      data: { products, nbHits: products.length },
+    });
   } catch (error) {
-   res.status(500).json({
-    msg:error
-   }) 
+    res.status(500).json({
+      msg: error,
+    });
   }
- }
+};
 
- const filterOnNumericValue = async (req,res) =>{
-   try {
-    const products  =  await Product.find({price:{$gt:30}}).sort('name').select('name price')
-     if(!products){
+const filterOnNumericValue = async (req, res) => {
+  try {
+    const products = await Product.find({ price: { $gt: 30 } })
+      .sort('name')
+      .select('name price');
+    if (!products) {
       return res.status(404).join({
         msg: `not such ${products} found`,
       });
-     }else{
+    } else {
       res.status(200).json({
-        status:"success",
-        msg:'the list of prouduct',
-        data:{products}
-      })
-     }
-   } catch (error) {
+        status: 'success',
+        msg: 'the list of prouduct',
+        data: { products },
+      });
+    }
+  } catch (error) {
     res.status(500).json({
-      msg:error
-    })
-   }
- }
+      msg: error,
+    });
+  }
+};
 // product by quary search
 const getProductsByQueary = async (req, res) => {
   try {
-    const { featured, company, name, sort, fields ,numericFilters} = req.query;
+    const { featured, company, name, sort, fields, numericFilters } = req.query;
     const quearyObject = {};
     if (featured) {
       quearyObject.featured = featured === 'true' ? true : false;
@@ -101,31 +104,29 @@ const getProductsByQueary = async (req, res) => {
       quearyObject.name = { $regex: name, $options: 'i' };
     }
     // numeric filter less than greater than
-     if(numericFilters){
+    if (numericFilters) {
       const operatorMap = {
-        '>':'$gt',
-        '>=':'$gte',
-        '=':'$eq',
-        '<':'$lt',
-        '<=':'$lte'
-      }
-       const regEx = /\b(<|>|>=|=|<|<=)\b/g
-       let filters = numericFilters.replace(
-         regEx,
-         (match) => `-${operatorMap[match]}-`
-       );
-  
-      const  options = ['price','rating'];
-      filters = filters.split(',').forEach((item) =>{
-        const [field,operator,value] = item.split('-')
-        if(options.includes(field)){
-          quearyObject[field] = {[operator]:Number(value)}
+        '>': '$gt',
+        '>=': '$gte',
+        '=': '$eq',
+        '<': '$lt',
+        '<=': '$lte',
+      };
+      const regEx = /\b(<|>|>=|=|<|<=)\b/g;
+      let filters = numericFilters.replace(
+        regEx,
+        (match) => `-${operatorMap[match]}-`
+      );
+
+      const options = ['price', 'rating'];
+      filters = filters.split(',').forEach((item) => {
+        const [field, operator, value] = item.split('-');
+        if (options.includes(field)) {
+          quearyObject[field] = { [operator]: Number(value) };
         }
-      }) 
-
-
-     }
-     console.log('quearyObject %%%%--->', quearyObject);
+      });
+    }
+    console.log('quearyObject %%%%--->', quearyObject);
     // product sort by different value
     let result = Product.find(quearyObject);
     if (sort) {
@@ -142,12 +143,12 @@ const getProductsByQueary = async (req, res) => {
       const selectList = fields.split(',').join(' ');
       console.log('fields--->', selectList);
       result = result.select(selectList);
-    } 
+    }
 
     // limits number of pages data show
-    const page  = Number(req.body.page) || 1;
-    const limit  = Number(req.query.limit) || 10
-    const skip = (page -1) * limit;
+    const page = Number(req.body.page) || 1;
+    const limit = Number(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
     result = result.skip(skip).limit(limit);
     // 23 -product /4
     // 7 7 7 2
@@ -197,10 +198,11 @@ const getProduct = async (req, res) => {
     const { id: productId } = req.params;
     console.log('productId', productId);
     const product = await Product.findById({ _id: productId });
+    console.log('product............', product);
     if (product) {
       res.status(200).json({
         msg: 'Product Featched....',
-        data: { product },
+        data: product,
       });
     } else {
       res.status(404).json({
