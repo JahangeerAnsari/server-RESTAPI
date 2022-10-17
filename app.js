@@ -3,6 +3,7 @@ const cors = require('cors')
 const app = express();
 const taskRoutes = require('./routes/tasks.route');
 const productRoutes = require('./routes/product.route');
+const jwtRoutes = require('./routes/jsonwebtoken.route');
 const notFoundRoute = require('./middleware/index');
 const connectDB = require('./db/connection');
 const errorMiddleware = require('./middleware/errorHandler');
@@ -14,8 +15,10 @@ app.use(cors())
 app.use(express.json());
 
 // routes
+
 app.use('/api/v1/tasks', taskRoutes);
 app.use('/api/v1/products', productRoutes);
+app.use('/api/v1/basicJwt', jwtRoutes);
  app.use(notFoundRoute);
 //  need to discussion
 // app.use(errorMiddleware);
@@ -26,7 +29,7 @@ const start = async () => {
     await connectDB(process.env.MONGOOSE_URL);
     app.listen(port, console.log(`Server is running on ${port}`));
   } catch (error) {
-    console.log(error);
+    console.log("database ",error);
   }
 };
 start();
