@@ -6,7 +6,7 @@ const productRoutes = require('./routes/product.route');
 const jwtRoutes = require('./routes/jsonwebtoken.route');
 const notFoundRoute = require('./middleware/index');
 const connectDB = require('./db/connection');
-const errorMiddleware = require('./middleware/errorHandler');
+const errorHandlerMiddleware = require('./middleware/errorHandler');
 require('express-async-errors');
 require('dotenv').config();
 
@@ -21,7 +21,9 @@ app.use('/api/v1/products', productRoutes);
 app.use('/api/v1/basicJwt', jwtRoutes);
  app.use(notFoundRoute);
 //  need to discussion
-// app.use(errorMiddleware);
+console.log("before middleware ")
+ app.use(errorHandlerMiddleware);
+ console.log("after middleware")
 
 const port = process.env.PORT || 3000;
 const start = async () => {
