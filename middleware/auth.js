@@ -1,9 +1,11 @@
 const jwt = require('jsonwebtoken');
 const { UnauthenticedError } = require('../errors');
+const { StatusCodes } = require('http-status-codes');
 const authenticationMiddleware = async (req, res, next) => {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return res.status(401).json({
+    // 401 --UNAUTHORIZED
+    return res.status(StatusCodes.UNAUTHORIZED).json({
       msg: 'No token Provided ',
     });
   }
@@ -16,7 +18,7 @@ const authenticationMiddleware = async (req, res, next) => {
     req.user = {id,username};
     next();
   } catch (error) {
-    res.status(401).json({
+    res.status(StatusCodes.UNAUTHORIZED).json({
       msg: 'Not authorized to access this route',
     });
   }
