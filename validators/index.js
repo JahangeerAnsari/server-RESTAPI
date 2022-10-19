@@ -25,17 +25,24 @@ exports.validateProductRequest = [
     .withMessage('Minumum 4 character required'),
 ];
 exports.validateUser = [
-  check('username')
+  check('name')
     .notEmpty()
-    .withMessage('User name must be provided')
-    .isLength({ min: 4})
-    .withMessage('Minumum 4 character required'),
+    .withMessage('User name field not be empty')
+    .isLength({ min: 4 })
+    .withMessage(' Name Minumum 4 character required'),
+  check('email')
+    .notEmpty()
+    .withMessage('Email  not be Empty field')
+    .isEmail()
+    .withMessage('Valid email is required'),
+
   check('password')
     .notEmpty()
-    .withMessage('Password  must be required')
+    .withMessage('Password  not be Empty field')
     .isLength({ min: 6 })
-    .withMessage('Minumum 6 character required'),
+    .withMessage('Password must be minimum 6 character required'),
 ];
+
 exports.isRequestValidated = (req, res,next) =>{
   const errors = validationResult(req);
   if (errors.array().length > 0) {
