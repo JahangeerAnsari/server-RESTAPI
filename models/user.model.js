@@ -25,17 +25,27 @@ const userSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
+// saved password as bycry password format
 
 userSchema.pre('save', async function (next) {
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
   next();
 });
+
+// jwt creation
 userSchema.methods.createJWT = function () {
   return jwt.sign(
     { userId: this._id, name: this.name },
     process.env.SECRET_KEY,
-    { expiresIn: '30d' }
+    { expiresIn: `${process.env.LIFE_TIME}` }
   );
 };
+
+// Comparing password
+
+userSchema.methods.comparePassword = async function(CandidatePassword){
+  const isMatch = await bcrypt.compare(CandidatePassword,this.password);
+  return isMatch;
+}
 module.exports = mongoose.model('User', userSchema);

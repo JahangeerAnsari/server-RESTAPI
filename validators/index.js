@@ -43,6 +43,22 @@ exports.validateUser = [
     .withMessage('Password must be minimum 6 character required'),
 ];
 
+exports.loginValidation = [
+  check('email')
+    .notEmpty()
+    .withMessage('Email  not be Empty field')
+    .isEmail()
+    .withMessage('Valid email is required'),
+
+  check('password')
+    .notEmpty()
+    .withMessage('Password  not be Empty field')
+    .isLength({ min: 6 })
+    .withMessage('Password must be minimum 6 character required'),
+];
+
+
+
 exports.isRequestValidated = (req, res,next) =>{
   const errors = validationResult(req);
   if (errors.array().length > 0) {
