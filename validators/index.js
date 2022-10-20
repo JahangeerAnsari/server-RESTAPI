@@ -56,6 +56,13 @@ exports.loginValidation = [
     .isLength({ min: 6 })
     .withMessage('Password must be minimum 6 character required'),
 ];
+exports.EmailValidation = [
+  check('email')
+    .notEmpty()
+    .withMessage('Email  not be Empty field')
+    .isEmail()
+    .withMessage('Valid email is required'),
+]; 
 
 
 
