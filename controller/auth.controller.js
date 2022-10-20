@@ -17,7 +17,6 @@ const register = async (req, res) => {
       // 201 created statusCodes
       res.status(StatusCodes.CREATED).json({
         msg: 'New user created..',
-        data: user,
         token,
       });
     }
