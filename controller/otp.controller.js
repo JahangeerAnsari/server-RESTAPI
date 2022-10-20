@@ -49,7 +49,8 @@ const mailTransform = (email, otp) => {
     from: 'mtesting623@gmail.com',
     to: email,
     subject: 'Testing our modemailer',
-    text: `The otp for the email is ${otp}`,
+    text: `We're excited to have you get started! First you need to confirm your account. Just verify the opt.
+    Here Is Your One Time Password ${otp}`,
   };
   console.log('detailse', details);
   transporter.sendMail(details, (err) => {
