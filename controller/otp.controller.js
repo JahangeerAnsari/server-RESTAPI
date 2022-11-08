@@ -18,14 +18,13 @@ const sendEmail = async (req, res) => {
     let otpData = new Otp({
       email: req.body.email,
       code: otpcode,
-      expireIn: new Date().getTime() + 300 * 1000,
+      expireIn: new Date().getTime() + 900 * 1000,
     });
     const otpResponse = await otpData.save();
     if (otpResponse) {
       mailTransform(req.body.email, otpcode);
       res.status(StatusCodes.CREATED).json({
-        msg: 'Otp has been send to your email',
-        data: otpResponse,
+        msg: 'Otp has been send to your email'
       });
     }
   } catch (error) {

@@ -62,7 +62,31 @@ exports.EmailValidation = [
     .withMessage('Email  not be Empty field')
     .isEmail()
     .withMessage('Valid email is required'),
+];
+
+exports.jobsValidation = [
+  check('company')
+    .notEmpty()
+    .withMessage('Company name not be Empty field')
+    .isLength({ min: 2 })
+    .withMessage('Company name must be minimum 2 character required'),
+
+  check('positon')
+    .notEmpty()
+    .withMessage('Positon  not be Empty field')
+    .isLength({ min: 2 })
+    .withMessage('Positon must be minimum 2 character required'),
+  // check('createdBy').notEmpty().withMessage('Please fill the name of the user'),
+];
+exports.EmailValidation = [
+  check('email')
+    .notEmpty()
+    .withMessage('Email  not be Empty field')
+    .isEmail()
+    .withMessage('Valid email is required'),
 ]; 
+
+
 
 
 
