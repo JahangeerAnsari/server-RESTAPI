@@ -4,6 +4,8 @@ const app = express();
 const authRoute = require('./routes/auth.route');
 const jobRoute = require('./routes/jobs.route');
 const otpRoute = require('./routes/otp.route');
+const productRoute = require('./routes/product.route');
+
 const notFoundRoute = require('./middleware/index');
 const connectDB = require('./db/connection');
 const authenticateUser = require('./middleware/auth');
@@ -19,6 +21,7 @@ app.use('/api/v1/auth', authRoute);
 app.use('/api/v1/otp', otpRoute);
 // we have protected all jobs routes
 app.use('/api/v1/jobs', authenticateUser, jobRoute);
+app.use('/api/v1/products', authenticateUser, productRoute);
 
 app.use(notFoundRoute);
 //  need to discussion

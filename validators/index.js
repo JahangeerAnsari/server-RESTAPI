@@ -86,6 +86,21 @@ exports.EmailValidation = [
     .withMessage('Valid email is required'),
 ]; 
 
+exports.productValidation = [
+  check('name')
+    .notEmpty()
+    .withMessage('Product name not be Empty field')
+    .isLength({ min: 2 })
+    .withMessage('Product name must be minimum 2 character required'),
+
+  check('price').notEmpty().withMessage('Price  not be Empty field'),
+  // check('productPictures[0].img')
+  //   .notEmpty()
+  //   .withMessage('Product image not be Empty field'),
+
+  // check('createdBy').notEmpty().withMessage('Please fill the name of the user'),
+];
+
 
 
 

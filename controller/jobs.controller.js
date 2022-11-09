@@ -1,5 +1,5 @@
-const { response } = require('express');
-const { check } = require('express-validator');
+
+
 const { StatusCodes } = require('http-status-codes');
 const Job = require('../models/job.model');
 // new job created for
