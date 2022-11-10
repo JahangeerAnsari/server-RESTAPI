@@ -47,8 +47,25 @@ console.log('productPictures2222', productPictures);
    
 }
 
-const getAllProduct = (req,res) =>{
-  res.send("get all product")
+const getAllProduct = async (req,res) =>{
+   try {
+   const products = await Product.find({ createdBy: req.user.userId }).sort(
+     'createdBy'
+   ); 
+   if(!products){
+    return res.status(StatusCodes.BAD_REQUEST).json({
+        msg:"No such product present..."
+    })
+   }
+   res.status(StatusCodes.OK).json({
+    msg:"Fetched all products",
+    products
+   })
+   } catch (error) {
+  res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+    msg: error.message,
+  });  
+   }
 }
 
 module.exports ={
