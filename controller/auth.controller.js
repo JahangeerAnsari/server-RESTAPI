@@ -1,5 +1,6 @@
 const User = require('../models/user.model');
 const { StatusCodes } = require('http-status-codes');
+const checkPermissions = require('../utils/checkPermission');
 
 const register = async (req, res) => {
   try {
@@ -22,33 +23,51 @@ const register = async (req, res) => {
       });
     }
   } catch (error) {
-  
     res.status(500).json({ msg: error.message });
   }
 };
 
 // const get all users having role is user
-const getAllUsers = async (req,res) =>{
+const getAllUsers = async (req, res) => {
   try {
-    const users = await User.find({role:'user'}).select('-password');
-   if(!users){
-   return res.status(StatusCodes.BAD_REQUEST).json({
-      msg:"No such users found"
-    })
-   }
+    const users = await User.find({ role: 'user' }).select('-password');
+    if (!users) {
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        msg: 'No such users found',
+      });
+    }
 
-   res.status(StatusCodes.OK).json({
-    msg:"Fetched all users",
-    users
-   })
-
-
+    return res.status(StatusCodes.OK).json({
+      msg: 'Fetched all users',
+      users,
+    });
   } catch (error) {
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       msg: error.message,
     });
   }
-}
+};
+
+const getSingleUser = async (req, res) => {
+  try {
+    const user = await User.findOne({ _id: req.params.id }).select('-password');
+    if (!user) {
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        msg: 'no such user present !..',
+      });
+    }
+    // checkPermissions(req.user,user._id);
+    return res.status(StatusCodes.OK).json({
+      msg: 'Fetched user..',
+      user,
+    });
+  } catch (error) {
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      msg: error.message,
+    });
+  }
+};
+
 // user login
 const login = async (req, res) => {
   try {
@@ -71,7 +90,7 @@ const login = async (req, res) => {
       msg: 'Login successfull...',
       user: {
         name: user.name,
-        role:user.role
+        role: user.role,
       },
       token,
     });
@@ -82,20 +101,21 @@ const login = async (req, res) => {
   }
 };
 
-const logout = async (req,res) =>{
-  res.send("logout.........")
+const logout = async (req, res) => {
+  res.send('logout.........');
   // try {
-    
+
   // } catch (error) {
   //   res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
   //     msg: error.message,
   //   });
   // }
-}
+};
 
 module.exports = {
   login,
   register,
   getAllUsers,
   logout,
+  getSingleUser,
 };
