@@ -14,8 +14,9 @@ const authenticationMiddleware = async (req, res, next) => {
   try {
     const decode = jwt.verify(token, process.env.SECRET_KEY);
     console.log('decode', decode);
-    const {userId, name} = decode;
-    req.user = {userId, name };        
+    const {userId, name,role} = decode;
+    console.log("udddddddddd",userId,name,role)
+    req.user = {userId, name ,role};        
     next();
   } catch (error) {
     res.status(StatusCodes.UNAUTHORIZED).json({
@@ -23,4 +24,24 @@ const authenticationMiddleware = async (req, res, next) => {
     });
   }
 };
-module.exports = authenticationMiddleware;
+// const authorizationPermissions = (req, res, next) => {
+//   if (req.user.role !== 'admin') {
+//     return res.status(StatusCodes.UNAUTHORIZED).json({
+//       msg: 'You are not valid user to authorized this route',
+//     });
+//   }
+//   next();
+// };
+
+const authorizationPermissions = (...roles) =>{
+ return (req, res, next) => {
+    if (!roles.includes(req.user.role)) {
+      return res.status(StatusCodes.UNAUTHORIZED).json({
+        msg: 'You are not valid user to authorized this route',
+      });
+    }
+     next();
+  };
+ 
+}
+module.exports = { authenticationMiddleware, authorizationPermissions };

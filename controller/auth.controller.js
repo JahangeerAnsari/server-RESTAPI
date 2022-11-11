@@ -17,6 +17,7 @@ const register = async (req, res) => {
       // 201 created statusCodes
       res.status(StatusCodes.CREATED).json({
         msg: 'New user created..',
+        user,
         token,
       });
     }
@@ -25,6 +26,29 @@ const register = async (req, res) => {
     res.status(500).json({ msg: error.message });
   }
 };
+
+// const get all users having role is user
+const getAllUsers = async (req,res) =>{
+  try {
+    const users = await User.find({role:'user'}).select('-password');
+   if(!users){
+   return res.status(StatusCodes.BAD_REQUEST).json({
+      msg:"No such users found"
+    })
+   }
+
+   res.status(StatusCodes.OK).json({
+    msg:"Fetched all users",
+    users
+   })
+
+
+  } catch (error) {
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      msg: error.message,
+    });
+  }
+}
 // user login
 const login = async (req, res) => {
   try {
@@ -47,6 +71,7 @@ const login = async (req, res) => {
       msg: 'Login successfull...',
       user: {
         name: user.name,
+        role:user.role
       },
       token,
     });
@@ -57,7 +82,20 @@ const login = async (req, res) => {
   }
 };
 
+const logout = async (req,res) =>{
+  res.send("logout.........")
+  // try {
+    
+  // } catch (error) {
+  //   res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+  //     msg: error.message,
+  //   });
+  // }
+}
+
 module.exports = {
   login,
   register,
+  getAllUsers,
+  logout,
 };
