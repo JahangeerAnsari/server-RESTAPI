@@ -30,7 +30,7 @@ app.use(notFoundRoute);
 const start = async () => {
   try {
     await connectDB(process.env.MONGOOSE_URL);
-    app.listen(process.env.PORT, console.log(`Server is running on ${port}`));
+    app.listen(process.env.PORT, console.log(`Server is running on ${process.env.PORT}`));
   } catch (error) {
     console.log('database ', error);
   }
