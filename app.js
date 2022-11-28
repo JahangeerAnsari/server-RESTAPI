@@ -26,11 +26,11 @@ app.use('/api/v1/products', authenticationMiddleware, productRoute);
 app.use(notFoundRoute);
 //  need to discussion
 
-const port = process.env.PORT || 5000;
+// const port = process.env.PORT || 5000;
 const start = async () => {
   try {
     await connectDB(process.env.MONGOOSE_URL);
-    app.listen(port, console.log(`Server is running on ${port}`));
+    app.listen(process.env.PORT, console.log(`Server is running on ${port}`));
   } catch (error) {
     console.log('database ', error);
   }
