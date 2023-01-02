@@ -27,6 +27,10 @@ const register = async (req, res) => {
   }
 };
 
+const verifyToken = async (req, res) => {
+  
+};
+
 // const get all users having role is user
 const getAllUsers = async (req, res) => {
   try {
@@ -118,4 +122,5 @@ module.exports = {
   getAllUsers,
   logout,
   getSingleUser,
+  verifyToken
 };
