@@ -47,7 +47,7 @@ const mailTransform = (email, otp) => {
   let details = {
     from: 'mtesting623@gmail.com',
     to: email,
-    subject: 'Testing our modemailer',
+    subject: 'Testing our nodemailer',
     text: `We're excited to have you get started! First you need to confirm your account. Just verify the opt.
     Here Is Your One Time Password ${otp}`,
   };
