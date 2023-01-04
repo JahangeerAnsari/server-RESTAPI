@@ -5,7 +5,7 @@ const authRoute = require('./routes/auth.route');
 const jobRoute = require('./routes/jobs.route');
 const otpRoute = require('./routes/otp.route');
 const productRoute = require('./routes/product.route');
-
+var bodyParser = require('body-parser');
 const notFoundRoute = require('./middleware/index');
 const connectDB = require('./db/connection');
 const {authenticationMiddleware} = require('./middleware/auth');
@@ -13,9 +13,11 @@ const {authenticationMiddleware} = require('./middleware/auth');
 require('express-async-errors');
 require('dotenv').config();
 
+
 // middleware
 app.use(cors());
 app.use(express.json());
+// app.use(bodyParser.urlencoded({extended:true, limit:'50mb'})); 
 // routes
 app.use('/api/v1/auth', authRoute);
 app.use('/api/v1/otp', otpRoute);
