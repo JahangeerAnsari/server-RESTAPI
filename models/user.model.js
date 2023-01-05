@@ -99,6 +99,15 @@ const userSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
+
+
+// vertual method to populate created post 
+userSchema.virtual("posts",{
+  ref:"Post",
+  foreignField:'user',
+  localField:"_id"
+})
+
 // saved password as bycry password format
 
 // userSchema.pre("save", async function (next) {

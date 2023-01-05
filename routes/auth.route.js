@@ -5,7 +5,7 @@ const {
   register,
   logout,
   getAllUsers,
-  getSingleUser,
+  userProfileController,
   deleteUser,
   UpdateUser,
   fetchedonlyUsers,
@@ -52,7 +52,7 @@ router.get(
 );
 
 // router.get("/:id", authenticationMiddleware, checkPermissions, getSingleUser);
-router.get("/:id", authenticationMiddleware, checkPermissions, getSingleUser);
+router.get("/profile/:id", authenticationMiddleware,  userProfileController);
 router.delete("/:id", authenticationMiddleware, checkPermissions, deleteUser);
 router.patch("/:id", authenticationMiddleware, UpdateUser);
 router.put("/follow", authenticationMiddleware, followingController);

@@ -74,9 +74,9 @@ const fetchedonlyUsers = async (req, res) => {
   }
 };
 
-const getSingleUser = async (req, res) => {
+const userProfileController = async (req, res) => {
   try {
-    const user = await User.findOne({ _id: req.params.id }).select("-password");
+    const user = await User.findById({ _id: req.params.id }).populate("posts").select("-password");
     if (!user) {
       return res.status(StatusCodes.BAD_REQUEST).json({
         msg: "no such user present !..",
@@ -542,7 +542,7 @@ module.exports = {
   register,
   getAllUsers,
   logout,
-  getSingleUser,
+  userProfileController,
   verifyToken,
   fetchedAllUsers,
   deleteUser,

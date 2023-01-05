@@ -4,7 +4,7 @@ const postSchema = new mongoose.Schema({
   title:{
     type:String,
     // required:[true,'Post title is required!'],
-    trim:true
+     trim:true
   },
   // Created by only category
   category:{
