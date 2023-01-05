@@ -6,7 +6,9 @@ const {
   fetchPostsByUserIdController,
   fetchPostByIdController,
   updatePostController,
-  deletePostController
+  deletePostController,
+  toggleAddLikeToPostController,
+  toggleDisLikeToPostController
 } = require("../controller/post.controller");
 const {
   uploadPhoto,
@@ -38,4 +40,6 @@ router.get(
 router.get("/:id",authenticationMiddleware,fetchPostByIdController)
 router.put("/update/:id",authenticationMiddleware,updatePostController);
 router.delete("/delete/:id",authenticationMiddleware,deletePostController);
+router.put("/likes",authenticationMiddleware,toggleAddLikeToPostController);
+router.put("/dislikes",authenticationMiddleware,toggleDisLikeToPostController);
 module.exports = router;
