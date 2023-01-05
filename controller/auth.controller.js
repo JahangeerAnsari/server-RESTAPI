@@ -4,6 +4,7 @@ const checkPermissions = require("../utils/checkPermission");
 const nodeMailer = require("nodemailer");
 const crypto = require("crypto");
 const cloudinaryUploadImage = require("../utils/cloudinary");
+const fs = require("fs");
 
 
 const register = async (req, res) => {
@@ -527,6 +528,7 @@ const profilePhotoUploadController = async (req, res) => {
     msg:'Image uploaded successfully',
     foundUser
    })
+   fs.unlinkSync(localPath);
    
   } catch (error) {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({

@@ -2,6 +2,7 @@ const Post = require("../models/post.model");
 const User = require("../models/user.model");
 const { StatusCodes } = require("http-status-codes");
 const Filter = require("bad-words");
+const fs = require("fs");
 const cloudinaryUploadImage = require("../utils/cloudinary");
 const createPostController = async (req, res) => {
   try {
@@ -46,6 +47,8 @@ const createPostController = async (req, res) => {
       msg: "New Post created successfully",
       post,
     });
+    // remove image from server once it up
+    fs.unlinkSync(localPath);
   } catch (error) {
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       msg: error.message,

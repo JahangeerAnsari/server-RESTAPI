@@ -3,7 +3,7 @@ const  mongoose  = require("mongoose");
 const postSchema = new mongoose.Schema({
   title:{
     type:String,
-    required:[true,'Post title is required!'],
+    // required:[true,'Post title is required!'],
     trim:true
   },
   // Created by only category
@@ -39,7 +39,7 @@ const postSchema = new mongoose.Schema({
   },
   description:{
     type:String,
-    required:[true,'Post description is required !']
+    // required:[true,'Post description is required !']
   },
   image:{
     type:String,
