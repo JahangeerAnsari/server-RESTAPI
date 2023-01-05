@@ -478,6 +478,7 @@ const login = async (req, res) => {
     res.status(StatusCodes.OK).json({
       msg: "Login successfull...",
       user: {
+        id:user._id,
         name: user.name,
         role: user.role,
       },
@@ -519,7 +520,7 @@ const profilePhotoUploadController = async (req, res) => {
       msg:'Failed to upload image'
     })
    }
-   const foundUser = await User.findOneAndUpdate(userId,{
+   const foundUser = await User.findOneAndUpdate({_id:userId},{
     profilePhoto:imageUploade?.url,
    },{new:true})
    res.status(StatusCodes.CREATED).json({

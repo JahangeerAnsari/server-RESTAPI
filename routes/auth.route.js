@@ -25,9 +25,9 @@ const {
   authorizationPermissions,
 } = require("../middleware/auth");
 const {
-  uploadProfilePhoto,
+  uploadPhoto,
   profilePhotoResize,
-} = require("../middleware/uploads/uploadProfilePhoto");
+} = require("../middleware/uploads/uploadPhoto");
 const checkPermissions = require("../utils/checkPermission");
 const {
   validateUser,
@@ -78,7 +78,8 @@ router.put("/reset-password", passwordResetController);
 router.put(
   "/profile-photo-upload",
   authenticationMiddleware,
-  uploadProfilePhoto.single("image"),
+  
+  uploadPhoto.single("image"),
   profilePhotoResize,
   profilePhotoUploadController
 );
