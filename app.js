@@ -7,6 +7,8 @@ const otpRoute = require('./routes/otp.route');
 const postRoute = require('./routes/post.route');
 const productRoute = require('./routes/product.route');
 const commentRoute = require('./routes/comment.route');
+const emailMsgRoute = require('./routes/emailMsg.route');
+const categoryRoute = require('./routes/category.route');
 
 var bodyParser = require('body-parser');
 const notFoundRoute = require('./middleware/index');
@@ -29,6 +31,8 @@ app.use('/api/v1/jobs', authenticationMiddleware, jobRoute);
 app.use('/api/v1/products', authenticationMiddleware, productRoute);
 app.use('/api/v1/post', authenticationMiddleware, postRoute);
 app.use('/api/v1/comments', authenticationMiddleware, commentRoute);
+app.use('/api/v1/email', authenticationMiddleware, emailMsgRoute);
+app.use('/api/v1/category', authenticationMiddleware, categoryRoute);
 
 app.use(notFoundRoute);
 //  need to discussion
