@@ -113,6 +113,28 @@ const deleteUser = async (req, res) => {
     });
   }
 };
+
+// get single user
+
+const getSingleUser = async (req, res) => {
+  try {
+    const { id: userId } = req.params;
+    const user = await User.findById({ _id: userId });
+    if (!user) {
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        msg: `no such user present for this id ${userId}`,
+      });
+    }
+    res.status(StatusCodes.OK).json({
+      msg: "user details ",
+      user,
+    });
+  } catch (error) {
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      msg: error.message,
+    });
+  }
+};
 const UpdateUser = async (req, res) => {
   try {
     const { id: userId } = req.params;
@@ -546,6 +568,7 @@ module.exports = {
   verifyToken,
   fetchedAllUsers,
   deleteUser,
+  getSingleUser,
   UpdateUser,
   fetchedonlyUsers,
   followingController,
