@@ -24,7 +24,9 @@ const createPostController = async (req, res) => {
     }
 
     // console.log("req.file post", req.file);
-    // get the localpath to image
+    // get the localpath to
+    // UPload photo stop
+
     const localPath = `public/images/posts/${req.file?.filename}`;
     // upload to cloudinary
     const postImageUploader = await cloudinaryUploadImage(localPath);
@@ -52,6 +54,7 @@ const createPostController = async (req, res) => {
       post,
     });
     // remove image from server once it up
+    // remove line
     fs.unlinkSync(localPath);
   } catch (error) {
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
@@ -62,17 +65,34 @@ const createPostController = async (req, res) => {
 // all post fetched by admin
 const fetchAllPostsController = async (req, res) => {
   try {
-    const posts = await Post.find({}).populate("user");
-    if (!posts) {
-      return res.status(StatusCodes.BAD_REQUEST).json({
-        msg: "post not found",
+    const hasCategory = req.query.category;
+    if(hasCategory){
+      const posts = await Post.find({category:hasCategory}).populate("user");
+      if (!posts) {
+        return res.status(StatusCodes.BAD_REQUEST).json({
+          msg: "post not found",
+        });
+      }
+  
+      res.status(StatusCodes.OK).json({
+        msg: "fetched post on category...",
+        posts,
+      });
+    }else{
+  
+      const posts = await Post.find({}).populate("user");
+      if (!posts) {
+        return res.status(StatusCodes.BAD_REQUEST).json({
+          msg: "post not found",
+        });
+      }
+  
+      res.status(StatusCodes.OK).json({
+        msg: "all posts fetched successfully",
+        posts,
       });
     }
-
-    res.status(StatusCodes.OK).json({
-      msg: "all posts fetched successfully",
-      posts,
-    });
+   
   } catch (error) {
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       msg: error.message,
@@ -102,7 +122,10 @@ const fetchPostsByUserIdController = async (req, res) => {
 const fetchPostByIdController = async (req, res) => {
   try {
     const { id } = req.params;
-    const post = await Post.findById(id).populate("user").populate("likes").populate("disLikes");
+    const post = await Post.findById(id)
+      .populate("user")
+      .populate("likes")
+      .populate("disLikes");
     if (!post) {
       return res.status(StatusCodes.BAD_REQUEST).json({
         msg: `Post not found ${id}`,
@@ -170,11 +193,11 @@ const deletePostController = async (req, res) => {
       return res.status(StatusCodes).json({
         msg: `No such post found with the id ${id}`,
       });
-    };
+    }
     res.status(StatusCodes.OK).json({
-      msg:'Post deleted successfully',
-      post
-    })
+      msg: "Post deleted successfully",
+      post,
+    });
   } catch (error) {
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       msg: error.message,
@@ -186,12 +209,12 @@ const deletePostController = async (req, res) => {
 const toggleAddLikeToPostController = async (req, res) => {
   try {
     //1. find the post by postiD
-    const {postId} = req.body;
-  const post  = await Post.findById(postId);
-    console.log("post ",post);
-    if(!post){
-     return  res.status(StatusCodes.BAD_REQUEST).json({
-        msg:`Post not found by id ${postId}`
+    const { postId } = req.body;
+    const post = await Post.findById(postId);
+    console.log("post ", post);
+    if (!post) {
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        msg: `Post not found by id ${postId}`,
       });
     }
 
@@ -199,122 +222,143 @@ const toggleAddLikeToPostController = async (req, res) => {
     const loginInUser = req.user.userId;
     // 3. find the loginInUser like this post
     const isLiked = post.isLiked;
-    console.log("isLiked",isLiked) 
+    console.log("isLiked", isLiked);
     // 4. check if the user has already been disLiked the post
-    const isUserDisLikedPost = post?.disLikes?.find(userId => userId?.toString() === loginInUser?.toString());
-console.log("isUserDisLikedPost",isUserDisLikedPost)
+    const isUserDisLikedPost = post?.disLikes?.find(
+      (userId) => userId?.toString() === loginInUser?.toString()
+    );
+    console.log("isUserDisLikedPost", isUserDisLikedPost);
 
-// if user disLiked the post then remove loginUser from the disLikes array
-  if(isUserDisLikedPost){
-    const removeDislikeUser =await Post.findByIdAndUpdate(postId,{
-      $pull:{
-        disLikes:loginInUser
-      },
-      isDisLiked:false
-    },{new:true});
-   
-    res.status(StatusCodes.OK).json({
-      msg:'Remove  disLiked user',
-      removeDislikeUser
-    })
+    // if user disLiked the post then remove loginUser from the disLikes array
+    if (isUserDisLikedPost) {
+      const removeDislikeUser = await Post.findByIdAndUpdate(
+        postId,
+        {
+          $pull: {
+            disLikes: loginInUser,
+          },
+          isDisLiked: false,
+        },
+        { new: true }
+      );
 
-  }
-  if(isLiked){
-    const removeLikeUser = await Post.findByIdAndUpdate(postId,{
-      $pull:{
-        likes:loginInUser
-      },
-      isLiked:false
-    },{new:true});
-   
-    res.status(StatusCodes.OK).json({
-      msg:'Remove Like User ',
-      removeLikeUser
-    })
-  }
-  
-  else{
+      res.status(StatusCodes.OK).json({
+        msg: "Remove  disLiked user",
+        removeDislikeUser,
+      });
+    }
+    if (isLiked) {
+      const removeLikeUser = await Post.findByIdAndUpdate(
+        postId,
+        {
+          $pull: {
+            likes: loginInUser,
+          },
+          isLiked: false,
+        },
+        { new: true }
+      );
 
-    // Add loginUser to the like array
-    const post = await Post.findByIdAndUpdate(postId,{
-      $push:{likes:loginInUser},
-      isLiked:true
-    },{new:true}) 
-     res.status(StatusCodes.OK).json({
-      msg:'You have like this post',
-      post
-    })
-  }
+      res.status(StatusCodes.OK).json({
+        msg: "Remove Like User ",
+        removeLikeUser,
+      });
+    } else {
+      // Add loginUser to the like array
+      const post = await Post.findByIdAndUpdate(
+        postId,
+        {
+          $push: { likes: loginInUser },
+          isLiked: true,
+        },
+        { new: true }
+      );
+      res.status(StatusCodes.OK).json({
+        msg: "You have like this post",
+        post,
+      });
+    }
 
-  // toggler
-  // remove user if he has already been liked the post
-  
-    
+    // toggler
+    // remove user if he has already been liked the post
   } catch (error) {
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       msg: error.message,
     });
   }
-}
+};
 
 const toggleDisLikeToPostController = async (req, res) => {
-try {
-  //1. find the post by postiD
-  const {postId} = req.body;
-  const post  = await Post.findById(postId);
-    console.log("post ",post);
-    if(!post){
-     return  res.status(StatusCodes.BAD_REQUEST).json({
-        msg:`Post not found by id ${postId}`
+  try {
+    //1. find the post by postiD
+    const { postId } = req.body;
+    const post = await Post.findById(postId);
+    console.log("post ", post);
+    if (!post) {
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        msg: `Post not found by id ${postId}`,
       });
     }
 
     // 2. find the loginInUser
     const loginInUser = req.user.userId;
     // 3. find the loginInUser isDisLiked the post;
-    const isDisLiked = post.isDisLiked; 
-    console.log("isDisLiked",isDisLiked);
+    const isDisLiked = post.isDisLiked;
+    console.log("isDisLiked", isDisLiked);
     // 4. check if the user has already been disLiked the post
-    const isAlreadyLikedPost = post?.likes?.find(userId => userId?.toString() === loginInUser?.toString());
-console.log("isAlreadyLikedPost",isAlreadyLikedPost);
-// if user is already like the post remove user from likes
-if(isAlreadyLikedPost){
- const post = await Post.findOneAndUpdate(postId,{
-  $pull:{likes:loginInUser},
-  isLiked:false
- },{new:true});
- res.status(StatusCodes.OK).json({
-  msg:'Remove user from likes',
-  post
- });
-}
-if(isDisLiked){
-  const post = await Post.findOneAndUpdate(postId,{
-    $pull:{disLikes:loginInUser},
-    isDisLiked:false
-  },{new:true});
+    const isAlreadyLikedPost = post?.likes?.find(
+      (userId) => userId?.toString() === loginInUser?.toString()
+    );
+    console.log("isAlreadyLikedPost", isAlreadyLikedPost);
+    // if user is already like the post remove user from likes
+    if (isAlreadyLikedPost) {
+      const post = await Post.findOneAndUpdate(
+        postId,
+        {
+          $pull: { likes: loginInUser },
+          isLiked: false,
+        },
+        { new: true }
+      );
+      res.status(StatusCodes.OK).json({
+        msg: "Remove user from likes",
+        post,
+      });
+    }
+    if (isDisLiked) {
+      const post = await Post.findOneAndUpdate(
+        postId,
+        {
+          $pull: { disLikes: loginInUser },
+          isDisLiked: false,
+        },
+        { new: true }
+      );
 
-  res.status(StatusCodes.OK).json({
-    msg:'Remove user from disLikes array',
-    post
-  })
-}else{
-  const post = await Post.findByIdAndUpdate(postId,{
-    $push:{disLikes:loginInUser},
-    isDisLiked:true
-  },{new:true});
-  res.status(StatusCodes.OK).json({
-    msg:'Post disliked..',post
-  })
-}
-
-
-} catch (error) {
-  return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-    msg: error.message,
-  });
-}
-}
+      res.status(StatusCodes.OK).json({
+        msg: "Remove user from disLikes array",
+        post,
+      });
+    } else {
+      const post = await Post.findByIdAndUpdate(
+        postId,
+        {
+          $push: { disLikes: loginInUser },
+          isDisLiked: true,
+        },
+        { new: true }
+      );
+      res.status(StatusCodes.OK).json({
+        msg: "Post disliked..",
+        post,
+      });
+    }
+  } catch (error) {
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      msg: error.message,
+    });
+  }
+};
 module.exports = {
   createPostController,
   fetchAllPostsController,
@@ -323,5 +367,5 @@ module.exports = {
   updatePostController,
   deletePostController,
   toggleAddLikeToPostController,
-  toggleDisLikeToPostController
+  toggleDisLikeToPostController,
 };

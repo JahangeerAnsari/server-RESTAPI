@@ -94,11 +94,17 @@ exports.productValidation = [
     .withMessage('Product name must be minimum 2 character required'),
 
   check('price').notEmpty().withMessage('Price  not be Empty field'),
-  // check('productPictures[0].img')
-  //   .notEmpty()
-  //   .withMessage('Product image not be Empty field'),
+ 
+];
+exports.categoryValidation = [
+  check('title')
+    .notEmpty()
+    .withMessage('Category name not be Empty field')
+    .isLength({ min: 4 })
+    .withMessage('Category name must be minimum 4 character required'),
 
-  // check('createdBy').notEmpty().withMessage('Please fill the name of the user'),
+  
+ 
 ];
 
 
@@ -109,7 +115,7 @@ exports.isRequestValidated = (req, res,next) =>{
   const errors = validationResult(req);
   if (errors.array().length > 0) {
     return res.status(400).json({
-      error: errors.array()[0].msg,
+      msg: errors.array()[0].msg,
       //   message: " valid input"
     });
   }

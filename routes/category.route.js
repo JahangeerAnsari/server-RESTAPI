@@ -11,11 +11,12 @@ const {
   updateCategoryController,
   deleteCategoryController
 } = require("../controller/category.controller");
+const { isRequestValidated, categoryValidation } = require("../validators");
 
-router.post("/", authenticationMiddleware, addNewCategoryController);
+router.post("/add", authenticationMiddleware,categoryValidation, isRequestValidated, addNewCategoryController);
 router.get("/", authenticationMiddleware, getAllCategoryController);
-router.get("/:id", authenticationMiddleware, getSingleCategoryController);
-router.put("/:id", authenticationMiddleware, updateCategoryController);
-router.delete("/:id", authenticationMiddleware, deleteCategoryController);
+router.get("/single/:id", authenticationMiddleware, getSingleCategoryController);
+router.put("/update/:id", authenticationMiddleware,categoryValidation, isRequestValidated, updateCategoryController);
+router.delete("/delete/:id", authenticationMiddleware, deleteCategoryController);
 
 module.exports = router;

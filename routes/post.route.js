@@ -21,8 +21,8 @@ const {
 router.post(
   "/add-new-post",
   authenticationMiddleware,
-  uploadPhoto.single("image"),
-  postImageResize,
+   uploadPhoto.single("image"),
+   postImageResize,
   createPostController
 );
 router.get(

@@ -3,19 +3,25 @@ const Category = require("../models/category.model");
 
 const addNewCategoryController = async (req, res) => {
   try {
-    const category = await Category.create({
-      user: req.user.userId,
-      title: req.body.title,
-    });
-    if(!category){
-      return res.status(StatusCodes.BAD_REQUEST).json({
-        msg:'Failed to create category'
+
+    const exitCategory = await Category.findOne({ title: req.body.title });
+     
+    if(exitCategory){
+      res.status(StatusCodes.BAD_REQUEST).json({
+        msg: `Already Exists category Please try different`,
+      });
+    }else{
+      const category = await Category.create({
+        user: req.user.userId,
+        title: req.body.title,
+      });
+      
+      res.status(StatusCodes.CREATED).json({
+       msg:'New category created...',
+       category
       })
     }
-    res.status(StatusCodes.CREATED).json({
-     msg:'New category created...',
-     category
-    })
+    
   } catch (error) {
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       msg: error.message,
@@ -26,7 +32,7 @@ const addNewCategoryController = async (req, res) => {
 // get all category
 const getAllCategoryController = async (req, res) => {
   try {
-    const categories = await  Category.find({});
+    const categories = await  Category.find({}).populate("user").sort("-createdAt");
     if(!categories){
       return res.status(StatusCodes.BAD_REQUEST).json({
         msg:'Failed to find categories'
